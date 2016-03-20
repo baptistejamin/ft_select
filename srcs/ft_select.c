@@ -71,6 +71,49 @@ void	ft_select_print(t_list *list)
 	}
 }
 
+int		ft_select_keyboard(t_select *select)
+{
+	char buf[3];
+
+	UNUSED(select);
+	ft_bzero(buf, 3);
+	read(0, buf, 3);
+	if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 65))
+	{
+		//Move top
+	}
+	else if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 66))
+	{
+		//Move bottom
+	}
+	else if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 67))
+	{
+		//move right
+	}
+	else if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 68))
+	{
+		//Move left
+	}
+	else if ((buf[0] == 32 && buf[1] == 0 && buf[2] == 0))
+	{
+		//Select
+	}
+	else if ((buf[0] == 127 || buf[0] == 126) && buf[1] == 0 && buf[2] == 0)
+	{
+		//Delete
+	}
+	else if ((buf[0] == 10 && buf[1] == 0 && buf[2] == 0))
+	{
+		//Return
+	}
+	else if ((buf[0] == 27 && buf[1] == 0 && buf[2] == 0))
+	{
+		//Escape
+	}
+	return (1);
+}
+
+
 int		main(int ac, char **av)
 {
 	t_select	*select;
@@ -88,8 +131,11 @@ int		main(int ac, char **av)
 	signal(SIGQUIT, ft_select_event);
 	ft_select_init_select(select, ac, av);
 	ft_select_init_termcaps(select);
-	ft_select_init_window(select);
 	//ft_lstiter(select.list, &show_str);
-	while (1);
+	while (1)
+	{
+		ft_select_init_window(select);
+		ft_select_keyboard(select);
+	}
 	return (0);
 }

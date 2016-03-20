@@ -14,12 +14,11 @@
 
 void	ft_select_events_go_background(int i)
 {
-	char		cp[2];
+	char	cp[2];
 
 	cp[0] = ft_select_recover()->term.c_cc[VSUSP];
 	cp[1] = '\0';
 	UNUSED(i);
-	ft_putendl("go back");
 	ft_select_reset(ft_select_recover());
 	signal(SIGCONT, ft_select_event);
 	signal(SIGTSTP, SIG_DFL);

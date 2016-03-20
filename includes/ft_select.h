@@ -31,6 +31,7 @@ typedef struct winsize	t_winsize;
 typedef struct			s_selector
 {
 	char				*str;
+	int					selected;
 }						t_selector;
 
 typedef struct			s_select
