@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <ft_select.h>
-#include <stdio.h>
 
 void	del_selector(void *elem, size_t content)
 {
@@ -22,33 +21,75 @@ void	del_selector(void *elem, size_t content)
 	free(elem);
 	content = 0;
 }
-void	init_select(t_select *select, int ac, char **av)
-{
-	int					i;
-	t_selector	selector;
 
-	i = 1;
-	while (i < ac)
-	{
-		selector.str = ft_strdup(av[i]);
-		ft_lstadd(&(select->list), ft_lstnew(&selector, sizeof(t_selector)));
-		i++;
-	}
-	ft_lstrev(&(select->list));
+int		tputs_putchar(int c)
+{
+	write(1, &c, 1);
+	return (1);
 }
 
-void	show_str(t_list *elem)
+void	ft_select_event(int i)
 {
-	t_selector	*selector;
+	if (i == SIGWINCH)
+		ft_select_events_resize(i);
+	else if (i == SIGTSTP)
+		ft_select_events_go_background(i);
+	else if (i == SIGCONT)
+		ft_select_events_go_foreground(i);
+	else if (i == SIGINT)
+		ft_select_events_exit(i);
+	else if (i == SIGQUIT)
+		ft_select_events_exit(i);
+}
 
-	selector = elem->content;
-	ft_putendl(selector->str);
+void	ft_select_print(t_list *list)
+{
+	t_list			*cur;
+	t_selector	*selector;
+	t_select		*select;
+	int		y;
+	int		x;
+
+	y = 1;
+	x = 0;
+	select = ft_select_recover();
+	tputs(tgetstr("cl", NULL), 0, tputs_putchar);
+	tputs(tgetstr("ho", NULL), 0, tputs_putchar);
+	cur = list;
+	while (cur)
+	{
+		selector = cur->content;
+		ft_putstr(selector->str);
+		if (y == select->win.ws_row)
+		{
+			y = 0;
+			x += select->max_len + 2;
+		}
+		tputs(tgoto(tgetstr("cm", NULL), x, y), 1, tputs_putchar);
+		y++;
+		cur = cur->next;
+	}
 }
 
 int		main(int ac, char **av)
 {
-	t_select	select;
-	init_select(&select, ac, av);
-	ft_lstiter(select.list, &show_str);
+	t_select	*select;
+
+	select = ft_select_recover();
+	if (ac == 1)
+	{
+		ft_select_errors_usage();
+		return (1);
+	}
+	signal(SIGWINCH, ft_select_event);
+	signal(SIGTSTP, ft_select_event);
+	signal(SIGCONT, ft_select_event);
+	signal(SIGINT, ft_select_event);
+	signal(SIGQUIT, ft_select_event);
+	ft_select_init_select(select, ac, av);
+	ft_select_init_termcaps(select);
+	ft_select_init_window(select);
+	//ft_lstiter(select.list, &show_str);
+	while (1);
 	return (0);
 }

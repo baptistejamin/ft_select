@@ -13,7 +13,13 @@
 #Define the program
 NAME			= ft_select
 LIB				=	./libft/libft.a
-_SRC			= 	ft_select.c
+_SRC			= 	ft_select.c \
+					ft_select_errors.c \
+					ft_select_init.c \
+					events/ft_select_events_exit.c \
+					events/ft_select_events_go_background.c \
+					events/ft_select_events_go_foreground.c \
+					events/ft_select_events_resize.c
 
 INCLUDES		= -I./libft/includes/ -I./includes/
 SRC				= $(addprefix srcs/,$(_SRC))
@@ -24,7 +30,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C ./libft/
-	@gcc $(CFLAGS) $(OBJ) $(LIB) $(INCLUDES) -o $(NAME)
+	@gcc $(CFLAGS) $(OBJ) $(LIB)  -L /usr/lib -ltermcap $(INCLUDES) -o $(NAME)
 	@echo $(NAME)" compiled"
 
 
