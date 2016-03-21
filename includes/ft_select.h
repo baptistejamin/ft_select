@@ -31,7 +31,7 @@ typedef struct winsize	t_winsize;
 typedef struct			s_selector
 {
 	char				*str;
-	int					selected;
+	int					is_selected;
 }						t_selector;
 
 typedef struct			s_select
@@ -40,6 +40,10 @@ typedef struct			s_select
 	t_termios			term;
 	t_winsize			win;
 	size_t				max_len;
+	int					cursor_index;
+	int					cursor_x;
+	int					cursor_y;
+	int					cols;
 	char				*term_name;
 }						t_select;
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelat.c                                      :+:      :+:    :+:   */
+/*   ft_lstdel_at.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjamin <bjamin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void	ft_lstdelat(t_list **list, int at, void (*del)(void *, size_t))
+void	ft_lstdel_at(t_list **list, int at, void (*del)(void *, size_t))
 {
 
 	t_list	*tmp;

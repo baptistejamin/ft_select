@@ -97,7 +97,8 @@ t_list				*ft_lstnew(void const *content, size_t content_size);
 int					ft_lstcount(t_list *list);
 void				ft_lstsort(t_list **list,
 	int (*cmp)(void *a_, void *b_), void *(*get_data)(t_list *e));
-void				ft_lstdelat(t_list **alst, int at, void (*del)(void *, size_t));
+void				ft_lstdel_at(t_list **alst, int at, void (*del)(void *, size_t));
+t_list				*ft_lstget_at(t_list *lst, int at);
 void				ft_lstrev(t_list **list);
 int					ft_nblen(int nb);
 void				ft_swap(int *a, int *b);

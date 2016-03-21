@@ -47,52 +47,85 @@ void	ft_select_print(t_list *list)
 	t_list			*cur;
 	t_selector	*selector;
 	t_select		*select;
-	int		y;
-	int		x;
+	int					y;
+	int					x;
+	int 				index;
 
 	y = 1;
 	x = 0;
+	index = 0;
 	select = ft_select_recover();
+	select->cols = 1;
 	tputs(tgetstr("cl", NULL), 0, tputs_putchar);
 	tputs(tgetstr("ho", NULL), 0, tputs_putchar);
 	cur = list;
 	while (cur)
 	{
-		selector = cur->content;
-		ft_putstr(selector->str);
+		if (index == select->cursor_index)
+		{
+			tputs(tgetstr("us", NULL), 0, tputs_putchar);
+			select->cursor_x = x;
+			select->cursor_y = y - 1;
+		}
 		if (y == select->win.ws_row)
 		{
 			y = 0;
+			select->cols++;
 			x += select->max_len + 2;
 		}
+		selector = cur->content;
+		if (selector->is_selected)
+			tputs(tgetstr("mr", NULL), 0, tputs_putchar);
+		ft_putstr(selector->str);
+		tputs(tgetstr("me", NULL), 0, tputs_putchar);
 		tputs(tgoto(tgetstr("cm", NULL), x, y), 1, tputs_putchar);
 		y++;
+		index++;
 		cur = cur->next;
 	}
+	tputs(tgoto(tgetstr("cm", NULL), select->cursor_x, select->cursor_y), 1, tputs_putchar);
 }
 
 int		ft_select_keyboard(t_select *select)
 {
 	char buf[3];
+	t_selector *selector;
 
-	UNUSED(select);
+	selector = NULL;
 	ft_bzero(buf, 3);
 	read(0, buf, 3);
 	if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 65))
 	{
 		//Move top
+		if (select->cursor_index == 0)
+			select->cursor_index = ft_lstcount(select->list) - 1;
+		else
+		{
+			select->cursor_index--;
+		}
 	}
 	else if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 66))
 	{
-		//Move bottom
+		if (select->cursor_index == (ft_lstcount(select->list) - 1))
+			select->cursor_index = 0;
+		else
+		{
+			select->cursor_index++;
+		}
 	}
 	else if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 67))
 	{
-		//move right
+		if (ft_lstget_at(select->list, select->cursor_index + select->win.ws_row))
+			select->cursor_index += select->win.ws_row;
+		else if (ft_lstget_at(select->list, select->cursor_index - (select->win.ws_row * (select->cols - 1))))
+			select->cursor_index -= (select->win.ws_row * (select->cols - 1));
 	}
 	else if ((buf[0] == 27 && buf[1] == 91 && buf[2] == 68))
 	{
-		//Move left
+		if (ft_lstget_at(select->list, select->cursor_index - select->win.ws_row))
+			select->cursor_index -= select->win.ws_row;
+		else if (ft_lstget_at(select->list, select->cursor_index + (select->win.ws_row * (select->cols - 1))))
+			select->cursor_index += (select->win.ws_row * (select->cols - 1));
 	}
 	else if ((buf[0] == 32 && buf[1] == 0 && buf[2] == 0))
 	{
