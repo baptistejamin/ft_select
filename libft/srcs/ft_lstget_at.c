@@ -20,7 +20,7 @@ t_list	*ft_lstget_at(t_list *lst, int at)
 	while (lst)
 	{
 		if (i == at)
-			return(lst);
+			return (lst);
 		lst = lst->next;
 		i++;
 	}

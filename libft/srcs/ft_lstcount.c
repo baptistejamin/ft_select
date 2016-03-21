@@ -21,7 +21,7 @@ int	ft_lstcount(t_list *list)
 	while (list)
 	{
 		list = list->next;
-		count ++;
+		count++;
 	}
 	return (count);
 }
