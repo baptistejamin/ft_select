@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <ft_select.h>
+#include <stdio.h>
 
 void	del_selector(void *elem, size_t content)
 {
@@ -24,7 +25,10 @@ void	del_selector(void *elem, size_t content)
 
 int		tputs_putchar(int c)
 {
-	write(1, &c, 1);
+	t_select	*select;
+
+	select = ft_select_recover();
+	write(select->tty, &c, 1);
 	return (1);
 }
 
@@ -40,6 +44,47 @@ void	ft_select_event(int i)
 		ft_select_events_exit(i);
 	else if (i == SIGQUIT)
 		ft_select_events_exit(i);
+}
+
+int		ft_select_get_max_words_by_page(void)
+{
+	t_select		*select;
+	int 				cols;
+
+	select = ft_select_recover();
+	cols = ((select->win.ws_col) / 	(select->max_len + 2));
+	return (cols * select->win.ws_row);
+}
+
+int		ft_select_get_pages(void)
+{
+	t_select		*select;
+	int 				pages;
+	int 				words;
+
+	select = ft_select_recover();
+	words = ft_lstcount(select->list);
+	select = ft_select_recover();
+	if (ft_select_get_max_words_by_page() == 0)
+		return (0);
+	pages = words / ft_select_get_max_words_by_page();
+	pages++;
+	//printf("pages = %d\n", pages);
+	//printf("max_words = %d\n", ft_select_get_max_words_by_page());
+	return pages;
+}
+
+
+int		ft_selected_get_page_offset(void)
+{
+	t_select		*select;
+	int 				words_by_page;
+
+	select = ft_select_recover();
+	words_by_page = ft_select_get_max_words_by_page();
+	if (words_by_page == 0)
+		return (0);
+	return (words_by_page * ((select->cursor_index) / words_by_page));
 }
 
 void	ft_select_print(t_list *list)
@@ -58,10 +103,13 @@ void	ft_select_print(t_list *list)
 	select->cols = 1;
 	tputs(tgetstr("cl", NULL), 0, tputs_putchar);
 	tputs(tgetstr("ho", NULL), 0, tputs_putchar);
-	cur = list;
-	while (cur)
+	cur = ft_lstget_at(list, ft_selected_get_page_offset());
+	if (ft_select_get_max_words_by_page() == 0)
+		ft_putstr_fd("Window size is too small", select->tty);
+	while (cur && index < ft_select_get_max_words_by_page())
 	{
-		if (index == select->cursor_index)
+		selector = cur->content;
+		if ((index + ft_selected_get_page_offset()) == select->cursor_index)
 		{
 			tputs(tgetstr("us", NULL), 0, tputs_putchar);
 			select->cursor_x = x;
@@ -73,10 +121,9 @@ void	ft_select_print(t_list *list)
 			select->cols++;
 			x += select->max_len + 2;
 		}
-		selector = cur->content;
 		if (selector->is_selected)
 			tputs(tgetstr("mr", NULL), 0, tputs_putchar);
-		ft_putstr(selector->str);
+		ft_putstr_fd(selector->str, select->tty);
 		tputs(tgetstr("me", NULL), 0, tputs_putchar);
 		tputs(tgoto(tgetstr("cm", NULL), x, y), 1, tputs_putchar);
 		y++;
@@ -86,6 +133,44 @@ void	ft_select_print(t_list *list)
 	tputs(tgoto(tgetstr("cm", NULL), select->cursor_x, select->cursor_y), 1, tputs_putchar);
 }
 
+void	ft_select_print_selected(t_list *list)
+{
+	t_list			*cur;
+	t_selector	*selector;
+	t_select		*select;
+	int					y;
+	int					x;
+	int 				index;
+
+	y = 1;
+	x = 0;
+	index = 0;
+	select = ft_select_recover();
+	cur = list;
+	while (cur)
+	{
+		selector = cur->content;
+		if (selector->is_selected)
+		{
+			if (index > 0)
+				ft_putstr_fd(" ", select->tty);
+			ft_putstr_fd(selector->str, select->tty);
+		}
+		index++;
+		cur = cur->next;
+	}
+}
+
+void	free_selector(void *content, size_t size)
+{
+	t_selector *selector;
+
+	UNUSED(size);
+	selector = content;
+	if (selector->str)
+		free(selector->str);
+	free(content);
+}
 int		ft_select_keyboard(t_select *select)
 {
 	char buf[3];
@@ -129,19 +214,34 @@ int		ft_select_keyboard(t_select *select)
 	}
 	else if ((buf[0] == 32 && buf[1] == 0 && buf[2] == 0))
 	{
+		if (ft_lstget_at(select->list, select->cursor_index))
+		{
+			selector = ft_lstget_at(select->list, select->cursor_index)->content;
+			selector->is_selected = !selector->is_selected;
+			if (select->cursor_index == (ft_lstcount(select->list) - 1))
+				select->cursor_index = 0;
+			else
+				select->cursor_index++;
+		}
 		//Select
 	}
-	else if ((buf[0] == 127 || buf[0] == 126) && buf[1] == 0 && buf[2] == 0)
+	else if ((buf[0] == 127 && buf[1] == 0 && buf[2] == 0))
 	{
-		//Delete
+		if (ft_lstget_at(select->list, select->cursor_index))
+		{
+			ft_lstdel_at(&select->list, select->cursor_index, &free_selector);
+			select->cursor_index  = (select->cursor_index > 0) ? select->cursor_index - 1 : 0;
+		}
 	}
 	else if ((buf[0] == 10 && buf[1] == 0 && buf[2] == 0))
 	{
-		//Return
+		ft_select_reset(select);
+		ft_select_print_selected(select->list);
+		exit(0);
 	}
 	else if ((buf[0] == 27 && buf[1] == 0 && buf[2] == 0))
 	{
-		//Escape
+		ft_select_events_exit(0);
 	}
 	return (1);
 }

@@ -71,6 +71,7 @@ int		ft_select_init_termcaps(t_select *select)
      return (0);
   if (tcgetattr(0, &select->term) == -1)
      return (0);
+  select->tty = open("/dev/tty", O_RDWR);
 	select->term.c_lflag &= ~(ICANON);
 	select->term.c_lflag &= ~(ECHO);
 	select->term.c_cc[VMIN] = 1;

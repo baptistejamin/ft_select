@@ -15,9 +15,9 @@
 
 # include <libft.h>
 # include <stdlib.h>
+# include <fcntl.h>
 # include <unistd.h>
 # include <termios.h>
-
 # include <term.h>
 # include <sys/ioctl.h>
 
@@ -44,6 +44,7 @@ typedef struct			s_select
 	int					cursor_x;
 	int					cursor_y;
 	int					cols;
+	int 				tty;
 	char				*term_name;
 }						t_select;
 
