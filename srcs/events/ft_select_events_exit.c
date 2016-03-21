@@ -16,6 +16,7 @@ void	ft_select_events_exit(int i)
 {
 	UNUSED(i);
 	ft_select_reset(ft_select_recover());
+	ft_select_free_env();
 	signal(SIGQUIT, SIG_DFL);
 	exit(0);
 }

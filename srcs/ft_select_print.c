@@ -74,7 +74,7 @@ void		ft_select_print(t_select *select, t_list *list)
 		tputs_putchar);
 }
 
-void	ft_select_print_selected(t_select *select, t_list *list)
+void		ft_select_print_selected(t_select *select, t_list *list)
 {
 	t_list			*cur;
 	t_selector		*selector;
@@ -98,4 +98,5 @@ void	ft_select_print_selected(t_select *select, t_list *list)
 		index++;
 		cur = cur->next;
 	}
+	exit(0);
 }

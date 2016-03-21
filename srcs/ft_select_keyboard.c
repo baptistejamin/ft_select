@@ -107,7 +107,7 @@ int			ft_select_keyboard(t_select *select)
 	{
 		ft_select_reset(select);
 		ft_select_print_selected(select, select->list);
-		exit(0);
+		ft_select_free_env();
 	}
 	else if (EXIT)
 		ft_select_events_exit(0);

@@ -55,5 +55,6 @@ int			main(int ac, char **av)
 		ft_select_init_window(select);
 		ft_select_keyboard(select);
 	}
+	ft_select_free_env();
 	return (0);
 }

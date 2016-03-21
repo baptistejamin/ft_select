@@ -67,6 +67,7 @@ void		ft_select_print_selected(t_select *select, t_list *list);
 void		ft_select_print(t_select *select, t_list *list);
 void		ft_select_event(int i);
 void		ft_select_free_selector(void *content, size_t size);
+void		ft_select_free_env(void);
 int			ft_select_keyboard(t_select *select);
 int			ft_select_reset(t_select *select);
 void		ft_select_errors_usage(void);

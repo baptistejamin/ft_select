@@ -22,3 +22,11 @@ void	ft_select_free_selector(void *content, size_t size)
 		free(selector->str);
 	free(content);
 }
+
+void	ft_select_free_env(void)
+{
+	t_select *select;
+
+	select = ft_select_recover();
+	ft_lstdel(&select->list, &ft_select_free_selector);
+}
