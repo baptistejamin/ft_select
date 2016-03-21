@@ -6,13 +6,13 @@
 /*   By: bjamin <bjamin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 14:06:11 by bjamin            #+#    #+#             */
-/*   Updated: 2016/03/21 18:53:53 by bjamin           ###   ########.fr       */
+/*   Updated: 2016/03/21 18:53:44 by bjamin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_select.h>
 
-void		ft_select_event(int i)
+void			ft_select_event(int i)
 {
 	if (i == SIGWINCH)
 		ft_select_events_resize(i);

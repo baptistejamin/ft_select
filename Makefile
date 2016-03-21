@@ -16,6 +16,10 @@ LIB				=	./libft/libft.a
 _SRC			= 	ft_select.c \
 					ft_select_errors.c \
 					ft_select_init.c \
+					ft_select_print.c \
+					ft_select_pages.c \
+					ft_select_keyboard.c \
+					ft_select_free.c \
 					events/ft_select_events_exit.c \
 					events/ft_select_events_go_background.c \
 					events/ft_select_events_go_foreground.c \

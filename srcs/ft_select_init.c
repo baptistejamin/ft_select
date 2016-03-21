@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_select.c                                        :+:      :+:    :+:   */
+/*   ft_select_init.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjamin <bjamin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 14:06:11 by bjamin            #+#    #+#             */
-/*   Updated: 2016/03/15 13:10:37 by bjamin           ###   ########.fr       */
+/*   Updated: 2016/03/21 18:32:13 by bjamin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_select.h>
 
-t_select	*ft_select_recover(void)
-{
-	static t_select	select;
-
-	return (&select);
-}
-
 void		ft_init_max_len(t_select *select)
 {
-	size_t 			len;
-	t_selector	*selector;
-	t_list 			*cur;
+	size_t			len;
+	t_selector		*selector;
+	t_list			*cur;
 
 	cur = select->list;
 	select->max_len = 0;
@@ -36,10 +29,11 @@ void		ft_init_max_len(t_select *select)
 		cur = cur->next;
 	}
 }
-void	ft_select_init_select(t_select *select, int ac, char **av)
+
+void		ft_select_init_select(t_select *select, int ac, char **av)
 {
-	int					i;
-	t_selector	selector;
+	int				i;
+	t_selector		selector;
 
 	select->list = NULL;
 	i = 1;
@@ -61,17 +55,17 @@ void	ft_select_init_select(t_select *select, int ac, char **av)
 	ft_init_max_len(select);
 }
 
-int		ft_select_init_termcaps(t_select *select)
-{ 
+int			ft_select_init_termcaps(t_select *select)
+{
 	char	buff_env[4096];
 
-  if ((select->term_name = getenv("TERM")) == NULL)
-     return (0);
-  if (tgetent(buff_env, select->term_name) != 1)
-     return (0);
-  if (tcgetattr(0, &select->term) == -1)
-     return (0);
-  select->tty = open("/dev/tty", O_RDWR);
+	if ((select->term_name = getenv("TERM")) == NULL)
+		return (0);
+	if (tgetent(buff_env, select->term_name) != 1)
+		return (0);
+	if (tcgetattr(0, &select->term) == -1)
+		return (0);
+	select->tty = open("/dev/tty", O_RDWR);
 	select->term.c_lflag &= ~(ICANON);
 	select->term.c_lflag &= ~(ECHO);
 	select->term.c_cc[VMIN] = 1;
@@ -82,18 +76,18 @@ int		ft_select_init_termcaps(t_select *select)
 	return (1);
 }
 
-int		ft_select_reset(t_select *select)
-{ 
+int			ft_select_reset(t_select *select)
+{
 	char	buff_env[4096];
 
-  if ((select->term_name = getenv("TERM")) == NULL)
-     return (0);
-  if (tgetent(buff_env, select->term_name) != 1)
-     return (0);
-  if (tcgetattr(0, &select->term) == -1)
-     return (0);
-  tputs(tgetstr("cl", NULL), 0, tputs_putchar);
-  tputs(tgetstr("te", NULL), 0, tputs_putchar);
+	if ((select->term_name = getenv("TERM")) == NULL)
+		return (0);
+	if (tgetent(buff_env, select->term_name) != 1)
+		return (0);
+	if (tcgetattr(0, &select->term) == -1)
+		return (0);
+	tputs(tgetstr("cl", NULL), 0, tputs_putchar);
+	tputs(tgetstr("te", NULL), 0, tputs_putchar);
 	tputs(tgetstr("ve", NULL), 0, tputs_putchar);
 	select->term.c_lflag = (ICANON | ECHO | ISIG);
 	if (tcsetattr(0, TCSADRAIN, &select->term) == -1)
@@ -101,9 +95,9 @@ int		ft_select_reset(t_select *select)
 	return (1);
 }
 
-int		ft_select_init_window(t_select *select)
+int			ft_select_init_window(t_select *select)
 {
 	if (ioctl(0, TIOCGWINSZ, &select->win) != -1)
-		ft_select_print(select->list);
+		ft_select_print(select, select->list);
 	return (1);
 }
