@@ -49,12 +49,15 @@ int			main(int ac, char **av)
 	signal(SIGINT, ft_select_event);
 	signal(SIGQUIT, ft_select_event);
 	ft_select_init_select(select, ac, av);
-	ft_select_init_termcaps(select);
+	if (!ft_select_init_termcaps(select))
+	{
+		ft_putendl_fd("Cannot show on tty", 2);
+		ft_select_events_exit(0);
+	}
 	while (1)
 	{
 		ft_select_init_window(select);
 		ft_select_keyboard(select);
 	}
-	ft_select_free_env();
 	return (0);
 }
