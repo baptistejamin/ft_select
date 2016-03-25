@@ -82,6 +82,7 @@ void		ft_select_print_selected(t_select *select, t_list *list)
 	int				x;
 	int				index;
 
+	UNUSED(select);
 	y = 1;
 	x = 0;
 	index = 0;
@@ -92,8 +93,8 @@ void		ft_select_print_selected(t_select *select, t_list *list)
 		if (selector->is_selected)
 		{
 			if (index > 0)
-				ft_putstr_fd(" ", select->tty);
-			ft_putstr_fd(selector->str, select->tty);
+				ft_putstr_fd(" ", 1);
+			ft_putstr_fd(selector->str, 1);
 		}
 		index++;
 		cur = cur->next;

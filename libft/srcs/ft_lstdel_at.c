@@ -36,6 +36,6 @@ void	ft_lstdel_at(t_list **list, int at, void (*del)(void *, size_t))
 			prev->next = tmp->next;
 		else
 			*list = tmp->next;
-		del(tmp, tmp->content_size);
+		del(tmp->content, tmp->content_size);
 	}
 }
