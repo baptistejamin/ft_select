@@ -38,17 +38,17 @@ int			main(int ac, char **av)
 	t_select	*select;
 
 	select = ft_select_recover();
-	if (ac == 1)
-	{
-		ft_select_errors_usage();
-		return (1);
-	}
 	signal(SIGWINCH, ft_select_event);
 	signal(SIGTSTP, ft_select_event);
 	signal(SIGCONT, ft_select_event);
 	signal(SIGINT, ft_select_event);
 	signal(SIGQUIT, ft_select_event);
 	ft_select_init_select(select, ac, av);
+	if (ft_lstcount(select->list) == 0)
+	{
+		ft_select_errors_usage();
+		exit(0);
+	}
 	if (!ft_select_init_termcaps(select))
 	{
 		ft_putendl_fd("Cannot show on tty", 2);

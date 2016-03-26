@@ -31,6 +31,7 @@
 # define DELETE ((buf[0] == 27 && buf[1] == 91 && buf[2] == 51))
 # define ENTER ((buf[0] == 10 && buf[1] == 0 && buf[2] == 0))
 # define EXIT ((buf[0] == 27 && buf[1] == 0 && buf[2] == 0))
+# define COLS (ft_lstcount(s->list) / s->win.ws_row)
 
 typedef struct termios	t_termios;
 typedef struct winsize	t_winsize;
@@ -39,6 +40,7 @@ typedef struct	s_selector
 {
 	char		*str;
 	int			is_selected;
+	int			y;
 }				t_selector;
 
 typedef struct	s_select

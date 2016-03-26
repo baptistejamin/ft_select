@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <ft_select.h>
+#include <stdio.h>
 
 static void	ft_select_keyboard_up_down(t_select *select, int is_up)
 {
@@ -34,25 +35,32 @@ static void	ft_select_keyboard_up_down(t_select *select, int is_up)
 	}
 }
 
-static void	ft_select_keyboard_right_left(t_select *select, int is_right)
+static void	ft_select_keyboard_right_left(t_select *s, int is_right)
 {
+	t_selector	*selector;
+
+	selector = NULL;
 	if (is_right)
 	{
-		if (ft_lstget_at(select->list, select->cursor_index +
-			select->win.ws_row))
-			select->cursor_index += select->win.ws_row;
-		else if (ft_lstget_at(select->list,
-			select->cursor_index - (select->win.ws_row * (select->cols - 1))))
-			select->cursor_index -= (select->win.ws_row * (select->cols - 1));
+		if (ft_lstget_at(s->list, s->cursor_index - 1))
+			selector =
+				ft_lstget_at(s->list, s->cursor_index - 1)->content;
+		if (ft_lstget_at(s->list, s->cursor_index + s->win.ws_row))
+			s->cursor_index += s->win.ws_row;
+		else if (selector && ft_lstget_at(s->list, selector->y))
+			s->cursor_index = selector->y;
+		else
+			s->cursor_index = 0;
 	}
 	else
 	{
-		if (ft_lstget_at(select->list,
-			select->cursor_index - select->win.ws_row))
-			select->cursor_index -= select->win.ws_row;
-		else if (ft_lstget_at(select->list,
-			select->cursor_index + (select->win.ws_row * (select->cols - 1))))
-			select->cursor_index += (select->win.ws_row * (select->cols - 1));
+		if (ft_lstget_at(s->list, s->cursor_index - s->win.ws_row))
+			s->cursor_index -= s->win.ws_row;
+		else if (ft_lstget_at(s->list,
+			s->cursor_index + (s->win.ws_row * COLS)))
+			s->cursor_index += s->win.ws_row * COLS;
+		else
+			s->cursor_index = ft_lstcount(s->list) - 1;
 	}
 }
 

@@ -43,11 +43,15 @@ void		ft_select_init_select(t_select *select, int ac, char **av)
 	select->max_len = 0;
 	while (i < ac)
 	{
-		selector.str = ft_strdup(av[i]);
-		selector.is_selected = 0;
-		if (ft_strlen(selector.str) > select->max_len)
-			select->max_len = ft_strlen(selector.str);
-		ft_lstadd(&(select->list), ft_lstnew(&selector, sizeof(t_selector)));
+		if (av[i][0])
+		{
+			selector.str = ft_strdup(av[i]);
+			selector.is_selected = 0;
+			if (ft_strlen(selector.str) > select->max_len)
+				select->max_len = ft_strlen(selector.str);
+			ft_lstadd(&(select->list), ft_lstnew(&selector,
+				sizeof(t_selector)));
+		}
 		i++;
 	}
 	if (select->list)

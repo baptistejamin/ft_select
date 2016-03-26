@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <ft_select.h>
+#include <printf.h>
 
 int			tputs_putchar(int c)
 {
@@ -41,6 +42,7 @@ static void	ft_select_print_one(t_selector *selector, int index, int *x, int *y)
 	if (selector->is_selected)
 		tputs(tgetstr("mr", NULL), 0, tputs_putchar);
 	ft_putstr_fd(selector->str, select->tty);
+	selector->y = *y;
 	tputs(tgetstr("me", NULL), 0, tputs_putchar);
 	tputs(tgoto(tgetstr("cm", NULL), *x, *y), 1, tputs_putchar);
 }
