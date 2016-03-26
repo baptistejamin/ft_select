@@ -38,12 +38,12 @@ int			main(int ac, char **av)
 	t_select	*select;
 
 	select = ft_select_recover();
+	ft_select_init_select(select, ac, av);
 	signal(SIGWINCH, ft_select_event);
 	signal(SIGTSTP, ft_select_event);
 	signal(SIGCONT, ft_select_event);
 	signal(SIGINT, ft_select_event);
 	signal(SIGQUIT, ft_select_event);
-	ft_select_init_select(select, ac, av);
 	if (ft_lstcount(select->list) == 0)
 	{
 		ft_select_errors_usage();
@@ -51,7 +51,7 @@ int			main(int ac, char **av)
 	}
 	if (!ft_select_init_termcaps(select))
 	{
-		ft_putendl_fd("Cannot show on tty", 2);
+		ft_putendl_fd("Cannot show on tty. No env vars?", 2);
 		ft_select_events_exit(0);
 	}
 	while (1)

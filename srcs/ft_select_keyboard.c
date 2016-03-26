@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <ft_select.h>
-#include <stdio.h>
 
 static void	ft_select_keyboard_up_down(t_select *select, int is_up)
 {
@@ -91,6 +90,8 @@ static void	ft_select_keyboard_delete(t_select *select)
 		select->cursor_index - 1 : 0;
 		ft_init_max_len(select);
 	}
+	if (ft_lstcount(select->list) == 0)
+		ft_select_events_exit(0);
 }
 
 int			ft_select_keyboard(t_select *select)

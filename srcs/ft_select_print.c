@@ -97,8 +97,8 @@ void		ft_select_print_selected(t_select *select, t_list *list)
 			if (index > 0)
 				ft_putstr_fd(" ", 1);
 			ft_putstr_fd(selector->str, 1);
+			index++;
 		}
-		index++;
 		cur = cur->next;
 	}
 	exit(0);
