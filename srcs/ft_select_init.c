@@ -90,11 +90,12 @@ int			ft_select_reset(t_select *select)
 		return (0);
 	if (tcgetattr(0, &select->term) == -1)
 		return (0);
-	select->term.c_lflag = (ICANON | ECHO);
+	select->term.c_lflag = (ICANON | ECHO | ISIG);
 	if (tcsetattr(0, 0, &select->term) == -1)
 		return (0);
-	tputs(tgetstr("te", NULL), 0, tputs_putchar);
-	tputs(tgetstr("ve", NULL), 0, tputs_putchar);
+	tputs(tgetstr("cl", NULL), 0, tputs_putchar);
+	tputs(tgetstr("te", NULL), 1, tputs_putchar);
+	tputs(tgetstr("ve", NULL), 1, tputs_putchar);
 	return (1);
 }
 
